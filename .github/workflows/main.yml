@@ -1,7 +1,7 @@
 name: Website Automation
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Manual run
 
 jobs:
   build:
@@ -10,6 +10,19 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+
+    - name: Install Chrome
+      run: |
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo dpkg -i google-chrome-stable_current_amd64.deb
+        sudo apt-get -f install -y
+
+    - name: Install ChromeDriver
+      run: |
+        wget https://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -21,11 +34,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Clone git repository
+    - name: Clone additional repository
       run: git clone https://github.com/Alex-Arc-hub/ssh
-          
+
     - name: Run shell script
-      run: |
-        cd myhell
-        chmod +x run.sh
-        ./run.sh
+      working-directory: ./ssh
+      run: chmod +x run.sh && ./run.sh
