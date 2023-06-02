@@ -1,9 +1,31 @@
-name: SSH
-on: workflow_dispatch
+name: Website Automation
+
+on:
+  workflow_dispatch:
+
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Clone git repository
+      run: git clone https://github.com/Alex-Arc-hub/ssh
+          
+    - name: Run shell script
+      run: |
+        cd myhell
+        chmod +x run.sh
+        ./run.sh
